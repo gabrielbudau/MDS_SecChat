@@ -31,7 +31,7 @@ public class Login extends javax.swing.JFrame {
         forgotMyPasswordLabel.setFont(new Font("Consolas", 10, 12));
         usernameLabel1.setFont(new Font("Consolas", 10, 12));
         passwordLabel.setFont(new Font("Consolas", 10, 12));
-        ImageIcon icon = new ImageIcon("C:\\Users\\Gabriel\\Desktop\\RetCalc\\MDS\\build\\classes\\mds\\img\\chat.png");
+        ImageIcon icon = new ImageIcon(".\\chat.png");
         this.setIconImage(icon.getImage());
     }
 

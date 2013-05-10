@@ -229,7 +229,7 @@ class Client extends javax.swing.JFrame {
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
                             Style style = doc.addStyle("StyleName", null);
-                            StyleConstants.setFontSize(style, 14);
+                            StyleConstants.setFontSize(style, 10);
                             StyleConstants.setForeground(style, Color.red);
                             StyleConstants.setFontFamily(style, "Consolas");
                             StyleConstants.setBold(style, true);
@@ -247,7 +247,7 @@ class Client extends javax.swing.JFrame {
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
                             Style style = doc.addStyle("StyleName", null);
-                            StyleConstants.setFontSize(style, 14);
+                            StyleConstants.setFontSize(style, 10);
                             StyleConstants.setForeground(style, Color.red);
                             StyleConstants.setFontFamily(style, "Consolas");
                             StyleConstants.setBold(style, true);
@@ -402,7 +402,7 @@ class Client extends javax.swing.JFrame {
                     StyledDocument doc = (StyledDocument) messagesTextPane.getDocument();
                     // Create a style object and then set the style attributes
                     Style style = doc.addStyle("StyleName", null);
-                    StyleConstants.setFontSize(style, 14);
+                    StyleConstants.setFontSize(style, 10);
                     StyleConstants.setForeground(style, Color.BLUE);
                     StyleConstants.setFontFamily(style, "Consolas");
                     StyleConstants.setBold(style, true);

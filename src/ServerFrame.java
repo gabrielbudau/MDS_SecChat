@@ -18,11 +18,16 @@ public class ServerFrame extends javax.swing.JFrame {
     private final int PORT = 1234;
     private ServerSocket ss;
     private ArrayList<Tuplu<String, Socket>> Links = new ArrayList<Tuplu<String, Socket>>();
-
+    private long getLinksThreadId; //Id threadului ce accepta conexiuni, avem nevoie pentru a-l putea inchide
+    private boolean serverStatus = false;
     public ServerFrame() {
         initComponents();
         serverStatusLabel.setForeground(Color.BLUE);
+        clearBtn.setFont(new Font("Consolas", 10, 10));
+        startBtn.setFont(new Font("Consolas", 10, 10));
+        stopBtn.setFont(new Font("Consolas", 10, 10));
         startServer();
+        serverStatus = true;
     }
 
     @SuppressWarnings("unchecked")
@@ -32,6 +37,9 @@ public class ServerFrame extends javax.swing.JFrame {
         serverStatusLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         serverMessagesTextArea = new javax.swing.JTextArea();
+        clearBtn = new javax.swing.JButton();
+        startBtn = new javax.swing.JButton();
+        stopBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -43,6 +51,27 @@ public class ServerFrame extends javax.swing.JFrame {
         serverMessagesTextArea.setRows(5);
         jScrollPane1.setViewportView(serverMessagesTextArea);
 
+        clearBtn.setText("clear output");
+        clearBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearBtnActionPerformed(evt);
+            }
+        });
+
+        startBtn.setText("start");
+        startBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startBtnActionPerformed(evt);
+            }
+        });
+
+        stopBtn.setText("stop");
+        stopBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -50,9 +79,14 @@ public class ServerFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(clearBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(startBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(stopBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                         .addComponent(serverStatusLabel)))
                 .addContainerGap())
         );
@@ -60,14 +94,53 @@ public class ServerFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(serverStatusLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(serverStatusLabel)
+                        .addComponent(clearBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(stopBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(11, 11, 11)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
+        serverMessagesTextArea.setText("");
+    }//GEN-LAST:event_clearBtnActionPerformed
+
+    private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
+        if(serverStatus){
+            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+            Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+            for(Thread elem : threadArray){
+                if(getLinksThreadId == elem.getId()){
+                    try {
+                        ss.close();
+                    } catch (IOException ex) {
+                        
+                    }
+                    serverStatusLabel.setText("OFFLINE");
+                    serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
+                    serverMessagesTextArea.append("Server Closed \n");
+                    Links.clear();
+                    serverStatus = false;
+                    elem.interrupt();
+            }
+        }
+        }
+    }//GEN-LAST:event_stopBtnActionPerformed
+
+    private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
+        if(!serverStatus){
+            startServer();
+            serverStatus = true;
+        }
+    }//GEN-LAST:event_startBtnActionPerformed
 
     private Tuplu findLink(String _username) {
         for (Tuplu elem : Links) {
@@ -123,6 +196,7 @@ public class ServerFrame extends javax.swing.JFrame {
                 }
             }
         });
+        this.getLinksThreadId = T.getId();
         T.start();
     }
     public static void main(String args[]) {
@@ -145,9 +219,12 @@ public class ServerFrame extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton clearBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea serverMessagesTextArea;
     private javax.swing.JLabel serverStatusLabel;
+    private javax.swing.JButton startBtn;
+    private javax.swing.JButton stopBtn;
     // End of variables declaration//GEN-END:variables
 
     private void printLinks() {
