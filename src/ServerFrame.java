@@ -1,6 +1,7 @@
 
 
 import java.awt.Color;
+import java.awt.Font;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -28,19 +29,11 @@ public class ServerFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        startServerButton = new javax.swing.JButton();
         serverStatusLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         serverMessagesTextArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        startServerButton.setText("START");
-        startServerButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startServerButtonActionPerformed(evt);
-            }
-        });
 
         serverStatusLabel.setFont(new java.awt.Font("Consolas", 1, 14)); // NOI18N
         serverStatusLabel.setText("offline");
@@ -57,10 +50,9 @@ public class ServerFrame extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(startServerButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(serverStatusLabel)))
                 .addContainerGap())
         );
@@ -68,11 +60,9 @@ public class ServerFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startServerButton)
-                    .addComponent(serverStatusLabel))
+                .addComponent(serverStatusLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -98,18 +88,23 @@ public class ServerFrame extends javax.swing.JFrame {
     }
 
     private void startServer() {
-        serverMessagesTextArea.append("Opening PORT...\n");
+        serverMessagesTextArea.setFont(new Font("Consolas", 10, 12));
+        serverMessagesTextArea.setForeground(Color.WHITE);
+        serverMessagesTextArea.setBackground(Color.BLACK);
+        serverMessagesTextArea.append("Opening PORT=" + PORT + " ...\n");
         try {
             ss = new ServerSocket(PORT);
-            serverStatusLabel.setText("online");
-            serverStatusLabel.setForeground(Color.green);
+            serverStatusLabel.setText("ONLINE");
+            serverStatusLabel.setForeground(new java.awt.Color(0, 102, 0));
+            serverStatusLabel.setFont(new Font("Consolas", 10, 15));
         } catch (IOException ioEx) {
-            serverMessagesTextArea.append("Unable to open port \n");
-            serverStatusLabel.setText("offline");
-            serverStatusLabel.setForeground(Color.black);
+            serverMessagesTextArea.append("Unable to open PORT = " + PORT + " \n");
+            serverStatusLabel.setText("OFFLINE");
+            serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
             System.exit(1);
         }
-
+        serverMessagesTextArea.append("PORT=" + PORT + " opened \n");
+        serverMessagesTextArea.append("Waiting connections... \n");
         Thread T = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -130,10 +125,6 @@ public class ServerFrame extends javax.swing.JFrame {
         });
         T.start();
     }
-    private void startServerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startServerButtonActionPerformed
-        startServer();
-    }//GEN-LAST:event_startServerButtonActionPerformed
-
     public static void main(String args[]) {
 
         try {
@@ -146,20 +137,17 @@ public class ServerFrame extends javax.swing.JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ServerFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new ServerFrame().setVisible(true);
             }
         });
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea serverMessagesTextArea;
     private javax.swing.JLabel serverStatusLabel;
-    private javax.swing.JButton startServerButton;
     // End of variables declaration//GEN-END:variables
 
     private void printLinks() {
@@ -203,6 +191,7 @@ public class ServerFrame extends javax.swing.JFrame {
                     }
                 } else {
                     Links.set(Index, new Tuplu(msg, Links.get(Index).getY()));
+                    serverMessagesTextArea.append("\"" + msg + "\" logged in  \n");
                 }
             }
         }
@@ -242,10 +231,11 @@ public class ServerFrame extends javax.swing.JFrame {
         private void execQuit() {
             try {
                 int index = findLinkBySocket(link);
+                serverMessagesTextArea.append("\"" + Links.get(index).getX() + "\" logged out  \n");
                 Links.remove(index);
                 link.close();
                 keepLoop = false;
-                //System.out.println(Links + "\n");
+                
                 Thread.currentThread().interrupt();
             } catch (IOException ex) {
                 Logger.getLogger(ServerFrame.class.getName()).log(Level.SEVERE, null, ex);
