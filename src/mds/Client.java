@@ -219,13 +219,15 @@ class Client extends javax.swing.JFrame {
                         res = in.nextLine();//mesaj primit de la server 
 
                         String temp = res.substring(0, res.indexOf(":")); //de la cine am primit mesajul
-
+                        
                         int index = searchByTitle(temp);
 
                         if (index != -1) {
                             //ClientForm frm = (ClientForm) tabs.get(index);
                             ClientPanel cpl = (ClientPanel) tabs.get(index).getY();
-
+                            //--------Decriptare mesaj-----
+                            String dec = Utils.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password);
+                            //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
                             Style style = doc.addStyle("StyleName", null);
@@ -238,12 +240,15 @@ class Client extends javax.swing.JFrame {
                             doc.insertString(doc.getLength(), "  " + res.substring(0, res.indexOf(":")), style);
                             StyleConstants.setForeground(style, Color.DARK_GRAY);
                             StyleConstants.setBold(style, false);
-                            doc.insertString(doc.getLength(), "" + res.substring(res.indexOf(":")) + "\n", style);
+                            doc.insertString(doc.getLength(), "::" + dec + "\n", style);
                             cpl.messagesTextPane.select(doc.getLength(), doc.getLength());
 
                         } else {
                             newTab(temp);
                             ClientPanel cpl = tabs.get(tabs.size() - 1).getY();
+                            //--------Decriptare mesaj-----
+                            String dec = Utils.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password);
+                            //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
                             Style style = doc.addStyle("StyleName", null);
@@ -255,7 +260,7 @@ class Client extends javax.swing.JFrame {
                             doc.insertString(doc.getLength(), "  " + res.substring(0, res.indexOf(":")), style);
                             StyleConstants.setForeground(style, Color.DARK_GRAY);
                             StyleConstants.setBold(style, false);
-                            doc.insertString(doc.getLength(), "" + res.substring(res.indexOf(":")) + "\n", style);
+                            doc.insertString(doc.getLength(), "::" + dec + "\n", style);
                             cpl.messagesTextPane.select(doc.getLength(), doc.getLength());
                             //TODO: Sa-i apara fereastra
 
@@ -264,6 +269,8 @@ class Client extends javax.swing.JFrame {
                     }
                 } catch (IOException ex) {
                 } catch (BadLocationException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -285,7 +292,8 @@ class Client extends javax.swing.JFrame {
 
         private String chatWith = null;
         private PrintWriter out = null;
-
+        private String password = "pass";
+        
         public ClientPanel(String _chatWith) {
             try {
                 initComponents();
@@ -395,9 +403,11 @@ class Client extends javax.swing.JFrame {
         private void sendMessage() {
             try {
                 String mes = this.sendMessageTextField.getText();
+                
+                
                 if (!mes.equals("")) {
                     this.sendMessageTextField.setText("");
-                    out.println(username + "***" + chatWith + "%%%" + mes);
+                    
 
                     StyledDocument doc = (StyledDocument) messagesTextPane.getDocument();
                     // Create a style object and then set the style attributes
@@ -412,8 +422,14 @@ class Client extends javax.swing.JFrame {
                     StyleConstants.setBold(style, false);
                     doc.insertString(doc.getLength(), "::" + mes + "\n", style);
                     messagesTextPane.select(doc.getLength(), doc.getLength());
+                    
+                    mes = new String(Utils.encrypt(mes, password));
+                    
+                    out.println(username + "***" + chatWith + "%%%" + mes);
                 }
             } catch (BadLocationException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

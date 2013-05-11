@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JLabel;
 
 /**
@@ -19,11 +22,13 @@ import javax.swing.JLabel;
  * @author Gabriel Budau
  */
 public class Utils {
+     private static String IV = "AAAAAAAAAAAAAAAA";
+    
     /*
      * Seteaza status-ul user-ului "_username" din BD cu "_status" 
      * optiuni posibile _status = offline | online
      */
-
+    
     public static boolean changePass(String user, String pass, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -32,9 +37,9 @@ public class Utils {
             String update = "update `users` set `user_pass` = '" + pass + "' where `user_name` = '" + user + "' and `email` = '" + email + "';";
             pst = con.prepareStatement(update);
             int i = pst.executeUpdate();
-            if(i == 0){
+            if (i == 0) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         } catch (ClassNotFoundException | SQLException ex) {
@@ -152,7 +157,7 @@ public class Utils {
             return false;
         }
     }
-    
+
     /*
      * Seteaza atributele unui font ca fiind subliniat
      */
@@ -161,7 +166,7 @@ public class Utils {
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         return attributes;
     }
-    
+
     /*
      * Seteaza atributele unui font ca fiind subliniat ingrosat
      */
@@ -169,5 +174,19 @@ public class Utils {
         final Map attributes = (new Font("Consolas", 1, 12)).getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         return attributes;
+    }
+
+    public static byte[] encrypt(String plainText, String encryptionKey) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
+        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(IV.getBytes("UTF-8")));
+        return cipher.doFinal(plainText.getBytes("UTF-8"));
+    }
+
+    public static String decrypt(byte[] cipherText, String encryptionKey) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
+        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES");
+        cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(IV.getBytes("UTF-8")));
+        return new String(cipher.doFinal(cipherText), "UTF-8");
     }
 }
