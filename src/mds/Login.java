@@ -5,9 +5,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.awt.font.TextAttribute;
-import java.util.Map;
-import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 
@@ -31,8 +28,8 @@ public class Login extends javax.swing.JFrame {
         forgotMyPasswordLabel.setFont(new Font("Consolas", 10, 12));
         usernameLabel1.setFont(new Font("Consolas", 10, 12));
         passwordLabel.setFont(new Font("Consolas", 10, 12));
-        ImageIcon icon = new ImageIcon(".\\chat.png");
-        this.setIconImage(icon.getImage());
+        //ImageIcon icon = new ImageIcon("chat.png");
+        //this.setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -186,6 +183,7 @@ public class Login extends javax.swing.JFrame {
         if (Utils.checkUser(user, pass)) {
             this.usernameLabel.setVisible(true);
             java.awt.EventQueue.invokeLater(new Runnable() {
+                @Override
                 public void run() {
                     new Client(user).setVisible(true);
                 }
@@ -236,6 +234,7 @@ public class Login extends javax.swing.JFrame {
         signUpLabel.setFont(new Font("Consolas", 1, 12));
         signUpLabel.setFont(new Font(Utils.setUnderlineBold()));
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new SignUp().setVisible(true);
             }
@@ -247,6 +246,7 @@ public class Login extends javax.swing.JFrame {
         forgotMyPasswordLabel.setFont(new Font("Consolas", 1, 12));
         forgotMyPasswordLabel.setFont(new Font(Utils.setUnderlineBold()));
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new ForgotMyPassword().setVisible(true);
             }
@@ -287,6 +287,7 @@ public class Login extends javax.swing.JFrame {
         }
 
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Login().setVisible(true);
             }
