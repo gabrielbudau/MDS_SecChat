@@ -226,7 +226,7 @@ class Client extends javax.swing.JFrame {
                             //ClientForm frm = (ClientForm) tabs.get(index);
                             ClientPanel cpl = (ClientPanel) tabs.get(index).getY();
                             //--------Decriptare mesaj-----
-                            String dec = Utils.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password);
+                            String dec = new String(AES.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password.getBytes()));
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
@@ -247,7 +247,7 @@ class Client extends javax.swing.JFrame {
                             newTab(temp);
                             ClientPanel cpl = tabs.get(tabs.size() - 1).getY();
                             //--------Decriptare mesaj-----
-                            String dec = Utils.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password);
+                            String dec = new String(AES.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password.getBytes()));
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
@@ -292,7 +292,7 @@ class Client extends javax.swing.JFrame {
 
         private String chatWith = null;
         private PrintWriter out = null;
-        private String password = "pass";
+        private String password = "aaaaaaaaaaaaaaa";
         
         public ClientPanel(String _chatWith) {
             try {
@@ -423,7 +423,7 @@ class Client extends javax.swing.JFrame {
                     doc.insertString(doc.getLength(), "::" + mes + "\n", style);
                     messagesTextPane.select(doc.getLength(), doc.getLength());
                     
-                    mes = new String(Utils.encrypt(mes, password));
+                    mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));
                     
                     out.println(username + "***" + chatWith + "%%%" + mes);
                 }

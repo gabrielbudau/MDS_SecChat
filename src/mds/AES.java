@@ -1,10 +1,13 @@
 package mds;
 
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Gabriel Budau
  */
-
 public class AES {
 
     private static int Nb, Nk, Nr;
@@ -392,14 +395,21 @@ public class AES {
         System.arraycopy(input, 0, tmp, 0, tmp.length);
         return tmp;
     }
-    
-    public static void main(String[] args){
-        String mes = "MesajDeCriptat";
-        String pass = "parola";
-        byte[] enc = encrypt(mes.getBytes(), pass.getBytes());
-        System.out.println("Mesaj: " + mes);
-        System.out.println("Criptat: " + new String(enc));
-        byte[] dec = decrypt(enc, pass.getBytes());
-        System.out.println("Decriptat: " + new String(dec));
+
+    public static void main(String[] args) {
+       /* 
+        try {
+            String mes = "MesajDeCriptat";
+            String pass = "parola";
+            byte[] enc = encrypt(mes.getBytes("US-ASCII"), pass.getBytes());
+            System.out.println("Mesaj: " + mes);
+            System.out.println("Criptat: " + new String(enc));
+            byte[] dec = decrypt(enc, pass.getBytes());
+            System.out.println("Decriptat: " + new String(dec));
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        */
+        
     }
 }

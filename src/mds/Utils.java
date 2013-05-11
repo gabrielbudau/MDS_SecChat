@@ -22,13 +22,13 @@ import javax.swing.JLabel;
  * @author Gabriel Budau
  */
 public class Utils {
-     private static String IV = "AAAAAAAAAAAAAAAA";
-    
+
+    private static String IV = "AAAAAAAAAAAAAAAA";
+
     /*
      * Seteaza status-ul user-ului "_username" din BD cu "_status" 
      * optiuni posibile _status = offline | online
      */
-    
     public static boolean changePass(String user, String pass, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -188,5 +188,27 @@ public class Utils {
         SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES");
         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(IV.getBytes("UTF-8")));
         return new String(cipher.doFinal(cipherText), "UTF-8");
+    }
+
+    public static String convertHexToString(String hex) {
+
+        StringBuilder sb = new StringBuilder();
+        StringBuilder temp = new StringBuilder();
+
+        //49204c6f7665204a617661 split into two characters 49, 20, 4c...
+        for (int i = 0; i < hex.length() - 1; i += 2) {
+
+            //grab the hex in pairs
+            String output = hex.substring(i, (i + 2));
+            //convert hex to decimal
+            int decimal = Integer.parseInt(output, 16);
+            //convert the decimal to character
+            sb.append((char) decimal);
+
+            temp.append(decimal);
+        }
+        System.out.println("Decimal : " + temp.toString());
+
+        return sb.toString();
     }
 }
