@@ -140,10 +140,10 @@ public class Utils {
     public static boolean addUser(String user, String pass, String first_name, String last_name, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160//uleimasl_users", "uleimasl", "IoA*)WxJaZ75");
             PreparedStatement pst = null;
             //INSERT INTO `database`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) VALUES ('andrei', 'root', 'offline', 'Andrei', 'Butnaru', 'andreibutnaru@gmail.com');
-            String insert = "insert into `database`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) values ("
+            String insert = "insert into `uleimasl_users`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) values ("
                     + "'" + user + "', "
                     + "'" + pass + "', "
                     + "'offline', "
@@ -154,6 +154,7 @@ public class Utils {
             pst.executeUpdate();
             return true;
         } catch (ClassNotFoundException | SQLException ex) {
+            ex.getMessage();
             return false;
         }
     }

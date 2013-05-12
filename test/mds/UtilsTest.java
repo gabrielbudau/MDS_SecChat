@@ -41,6 +41,8 @@ public class UtilsTest {
     /**
      * Test of changePass method, of class Utils.
      */
+    
+    
     @Test
     public void testChangePass() {
         System.out.println("changePass");
@@ -100,15 +102,14 @@ public class UtilsTest {
     @Test
     public void testAddUser() {
         System.out.println("addUser");
-        String user = "";
-        String pass = "";
-        String first_name = "";
-        String last_name = "";
-        String email = "";
-        boolean expResult = false;
+        String user = "gabriel";
+        String pass = "root";
+        String first_name = "Gabriel";
+        String last_name = "Budau";
+        String email = "gabriel@budau.com";
+        boolean expResult = true;
         boolean result = Utils.addUser(user, pass, first_name, last_name, email);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
@@ -167,4 +168,6 @@ public class UtilsTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+    
+    
 }
