@@ -1,0 +1,12 @@
+1. Sa notifice toti clientii daca se va inchide serverul - asta pentru butonul de 'stop' de pe 'ServerFrame.java', dupa
+aceea sa inchida ficare conexiune aflata in ArrayList 'Links'.--Gabriel--Laura--
+2. Trebuie adaugata informatie in JavaDoc-ul generat, aceasta va fi documentatia proiectului. JavaDoc este un fisier 
+.html in care vom gasi toate informatiile referitoare la fiecare clasa si metoda din proiect (fisierul .html este 
+generat automat de catre NetBeans). --Alina--Gabriel--
+3. Testele automate care vor fi sustinute de proiect pentru a fi siguri ca nu 'crapa'. --Horia--
+4. Generarea diagramei UML a proiectului. --Laura--Gabriel--
+5. Am revenit la criptarea AES pentru ca am gasit deja implementarea trebuie doar rezolvate bug-urile. --Elena--Gabriel--
+
+
+p.s. Daca va intrebati de ce eu sunt la majoritatea task-urilor este pentru ca eu sunt singurul care stie exact ce face
+fiecare metoda si ce rol are fiecare camp.
