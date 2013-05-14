@@ -1,5 +1,4 @@
 
-
 import java.awt.Color;
 import java.awt.Font;
 import java.io.*;
@@ -8,6 +7,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
+import java.net.SocketException;
 
 /**
  *
@@ -20,6 +20,7 @@ public class ServerFrame extends javax.swing.JFrame {
     private ArrayList<Tuplu<String, Socket>> Links = new ArrayList<Tuplu<String, Socket>>();
     private long getLinksThreadId; //Id threadului ce accepta conexiuni, avem nevoie pentru a-l putea inchide
     private boolean serverStatus = false;
+
     public ServerFrame() {
         initComponents();
         serverStatusLabel.setForeground(Color.BLUE);
@@ -114,29 +115,28 @@ public class ServerFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
-        if(serverStatus){
-            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-            Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-            for(Thread elem : threadArray){
-                if(getLinksThreadId == elem.getId()){
-                    try {
+        if (serverStatus) {
+            try {
+                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
+                for (Thread elem : threadArray) {
+                    if (getLinksThreadId == elem.getId()) {
                         ss.close();
-                    } catch (IOException ex) {
-                        
+                        serverStatusLabel.setText("OFFLINE");
+                        serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
+                        serverMessagesTextArea.append("Server Closed \n");
+                        Links.clear();
+                        serverStatus = false;
+                        elem.interrupt();
                     }
-                    serverStatusLabel.setText("OFFLINE");
-                    serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
-                    serverMessagesTextArea.append("Server Closed \n");
-                    Links.clear();
-                    serverStatus = false;
-                    elem.interrupt();
+                }
+            } catch (Exception ex) {
             }
-        }
         }
     }//GEN-LAST:event_stopBtnActionPerformed
 
     private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        if(!serverStatus){
+        if (!serverStatus) {
             startServer();
             serverStatus = true;
         }
@@ -199,6 +199,7 @@ public class ServerFrame extends javax.swing.JFrame {
         this.getLinksThreadId = T.getId();
         T.start();
     }
+
     public static void main(String args[]) {
 
         try {
@@ -217,7 +218,6 @@ public class ServerFrame extends javax.swing.JFrame {
             }
         });
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton clearBtn;
     private javax.swing.JScrollPane jScrollPane1;
@@ -296,9 +296,10 @@ public class ServerFrame extends javax.swing.JFrame {
                     found = true;
                 }
                 if (!found) {/*
-                 * TODO----------
-                    output = new PrintWriter(link.getOutputStream(), true);
-                    output.println(username + " nu este conectat.");*/
+                     * TODO----------
+                     output = new PrintWriter(link.getOutputStream(), true);
+                     output.println(username + " nu este conectat.");*/
+
                 }
             } catch (IOException e) {
                 e.getMessage();
@@ -312,7 +313,7 @@ public class ServerFrame extends javax.swing.JFrame {
                 Links.remove(index);
                 link.close();
                 keepLoop = false;
-                
+
                 Thread.currentThread().interrupt();
             } catch (IOException ex) {
                 Logger.getLogger(ServerFrame.class.getName()).log(Level.SEVERE, null, ex);

@@ -33,10 +33,6 @@ class Client extends javax.swing.JFrame {
         username = _username;
         Utils.setStatus(username, "online");
         start();
-        //tabsPane.add("tab1", new ClientPanel());
-
-
-
     }
 
     @SuppressWarnings("unchecked")
@@ -120,14 +116,13 @@ class Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void newTab(String _title) {
-        //ClientForm frm = new ClientForm(_title);
-        //username + " chats with:" + _chatWith
-        ClientPanel cpl = new ClientPanel(_title);
-        tabsPane.add(_title, cpl);
-        tabs.add(new Tuplu(username + " chats with:" + _title, cpl));
-
+        if (tabs.size() < 8 && searchByTitle(_title) == -1) {
+            ClientPanel cpl = new ClientPanel(_title);
+            tabsPane.add(_title, cpl);
+            tabs.add(new Tuplu(username + " chats with:" + _title, cpl));
+        }
     }
-
+    
     private void startChat() {
         if (!friendsList.isSelectionEmpty()) {
             String selItem = (String) friendsList.getSelectedValue();
@@ -219,7 +214,7 @@ class Client extends javax.swing.JFrame {
                         res = in.nextLine();//mesaj primit de la server 
 
                         String temp = res.substring(0, res.indexOf(":")); //de la cine am primit mesajul
-                        
+
                         int index = searchByTitle(temp);
 
                         if (index != -1) {
@@ -293,7 +288,7 @@ class Client extends javax.swing.JFrame {
         private String chatWith = null;
         private PrintWriter out = null;
         private String password = "aaaaaaaaaaaaaaa";
-        
+
         public ClientPanel(String _chatWith) {
             try {
                 initComponents();
@@ -309,17 +304,16 @@ class Client extends javax.swing.JFrame {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
         private void initComponents() {
 
-
             jScrollPane3 = new javax.swing.JScrollPane();
             messagesTextPane = new javax.swing.JTextPane();
             sendMessageTextField = new javax.swing.JTextField();
             sendButton = new javax.swing.JButton();
-            encdecTextField = new javax.swing.JTextField();
             exitLabel = new javax.swing.JLabel();
-            encdecButton = new javax.swing.JButton();
 
             setPreferredSize(new java.awt.Dimension(380, 343));
+
             jScrollPane3.setAutoscrolls(true);
+
             messagesTextPane.setEditable(false);
             jScrollPane3.setViewportView(messagesTextPane);
 
@@ -336,29 +330,24 @@ class Client extends javax.swing.JFrame {
                 }
             });
 
-            encdecTextField.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(java.awt.event.ActionEvent evt) {
-                    encdecTextFieldActionPerformed(evt);
-                }
-            });
-
             exitLabel.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
             exitLabel.setText("exit");
             exitLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
                     exitLabelMouseEntered(evt);
                 }
 
+                @Override
                 public void mouseExited(java.awt.event.MouseEvent evt) {
                     exitLabelMouseExited(evt);
                 }
 
+                @Override
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     exitLabelMouseClicked(evt);
                 }
             });
-
-            encdecButton.setText("enc/dec");
 
             javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
             this.setLayout(layout);
@@ -368,27 +357,19 @@ class Client extends javax.swing.JFrame {
                     .addGap(14, 14, 14)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addComponent(sendMessageTextField)
+                    .addComponent(sendMessageTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(sendButton))
                     .addComponent(jScrollPane3)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addComponent(encdecTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(encdecButton)
-                    .addGap(18, 18, 18)
-                    .addComponent(exitLabel)))
+                    .addComponent(exitLabel, javax.swing.GroupLayout.Alignment.TRAILING))
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
             layout.setVerticalGroup(
                     layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                     .addGap(10, 10, 10)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(encdecTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(encdecButton)
-                    .addComponent(exitLabel))
+                    .addComponent(exitLabel)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(sendMessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -403,11 +384,11 @@ class Client extends javax.swing.JFrame {
         private void sendMessage() {
             try {
                 String mes = this.sendMessageTextField.getText();
-                
-                
+
+
                 if (!mes.equals("")) {
                     this.sendMessageTextField.setText("");
-                    
+
 
                     StyledDocument doc = (StyledDocument) messagesTextPane.getDocument();
                     // Create a style object and then set the style attributes
@@ -423,7 +404,7 @@ class Client extends javax.swing.JFrame {
                     doc.insertString(doc.getLength(), "::" + mes + "\n", style);
                     messagesTextPane.select(doc.getLength(), doc.getLength());
                     /*
-                    mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));*/
+                     mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));*/
                     String send = username + "***" + chatWith + "%%%" + mes;
                     out.println(send);
                 }
@@ -435,14 +416,25 @@ class Client extends javax.swing.JFrame {
         }
 
         private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {
-           sendMessage();
+            sendMessage();
         }
 
         private void exitLabelMouseClicked(java.awt.event.MouseEvent evt) {
             exitLabel.setForeground(Color.RED);
             exitLabel.setFont(new Font("Consolas", 1, 12));
             exitLabel.setFont(new Font(Utils.setUnderlineBold()));
+
             //TODO sa inchida tab-ul
+
+            int index = searchByTitle_v0_2(username + " chats with:" + chatWith);
+            Tuplu tup = tabs.get(index);
+            ClientPanel cpl = (ClientPanel) tup.getY();
+            cpl.setVisible(false);
+            tabsPane.remove(index);
+            tabs.remove(index);
+            Thread.currentThread().interrupt();
+
+            //DID
 
         }
 
