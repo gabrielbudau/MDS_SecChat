@@ -140,7 +140,7 @@ public class Utils {
     public static boolean addUser(String user, String pass, String first_name, String last_name, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://uleimasline.ro/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
             PreparedStatement pst = null;
             //INSERT INTO `database`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) VALUES ('andrei', 'root', 'offline', 'Andrei', 'Butnaru', 'andreibutnaru@gmail.com');
             String insert = "insert into `uleimasl_users`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) values ("
