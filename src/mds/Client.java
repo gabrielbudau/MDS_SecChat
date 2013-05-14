@@ -135,6 +135,16 @@ class Client extends javax.swing.JFrame {
             }
         }
     }
+    private void closeForm(){
+        try {
+            Utils.setStatus(username, "offline");
+            out.println("***QUIT***");
+            link.close();
+            out.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
         Utils.getList(friendsList);
     }//GEN-LAST:event_refreshButtonActionPerformed
@@ -144,14 +154,7 @@ class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_chatButtonActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        try {
-            Utils.setStatus(username, "offline");
-            out.println("***QUIT***");
-            link.close();
-            out.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        closeForm();
     }//GEN-LAST:event_formWindowClosing
 
     private void friendsListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_friendsListMouseClicked
@@ -194,13 +197,13 @@ class Client extends javax.swing.JFrame {
             Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
             this.setLocation((dim.width - this.getWidth()) / 2, (dim.height - this.getHeight()) / 2);
 
-            friendsList.setFont(new java.awt.Font("Consolas", 10, 12));
+            friendsList.setFont(new java.awt.Font("Oswald", 10, 12));
 
             link = new Socket(host, PORT);
             out = new PrintWriter(link.getOutputStream(), true);
             out.println(username);
         } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            closeForm();
         }
 
         Thread getMsg = new Thread(new Runnable() {

@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
-import java.net.SocketException;
 
 /**
  *
@@ -17,10 +16,11 @@ public class ServerFrame extends javax.swing.JFrame {
 
     private final int PORT = 1234;
     private ServerSocket ss;
-    private ArrayList<Tuplu<String, Socket>> Links = new ArrayList<Tuplu<String, Socket>>();
+    private ArrayList<Tuplu<String, Socket>> Links = new ArrayList<>();
+    private ArrayList<Link> conexiuni = new ArrayList<>();
+    private ArrayList<Thread> threads = new ArrayList<>();
     private long getLinksThreadId; //Id threadului ce accepta conexiuni, avem nevoie pentru a-l putea inchide
     private boolean serverStatus = false;
-
     public ServerFrame() {
         initComponents();
         serverStatusLabel.setForeground(Color.BLUE);
@@ -117,20 +117,23 @@ public class ServerFrame extends javax.swing.JFrame {
     private void stopBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopBtnActionPerformed
         if (serverStatus) {
             try {
-                Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-                Thread[] threadArray = threadSet.toArray(new Thread[threadSet.size()]);
-                for (Thread elem : threadArray) {
-                    if (getLinksThreadId == elem.getId()) {
-                        ss.close();
-                        serverStatusLabel.setText("OFFLINE");
-                        serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
-                        serverMessagesTextArea.append("Server Closed \n");
-                        Links.clear();
-                        serverStatus = false;
-                        elem.interrupt();
-                    }
+                
+                for (Link elem : conexiuni) {
+                    elem.input.close();
+                    elem.output.close();
+                    elem.link.close();
                 }
+                for (Thread elem : threads) {
+                    elem.interrupt();
+                }
+                Links.clear();
+                serverStatusLabel.setText("OFFLINE");
+                serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
+                serverMessagesTextArea.append("Server Closed \n");
+                serverStatus = false;
+                ss.close();
             } catch (Exception ex) {
+                serverMessagesTextArea.append(ex.getMessage());
             }
         }
     }//GEN-LAST:event_stopBtnActionPerformed
@@ -174,26 +177,32 @@ public class ServerFrame extends javax.swing.JFrame {
             serverMessagesTextArea.append("Unable to open PORT = " + PORT + " \n");
             serverStatusLabel.setText("OFFLINE");
             serverStatusLabel.setForeground(new java.awt.Color(255, 0, 0));
-            System.exit(1);
         }
         serverMessagesTextArea.append("PORT=" + PORT + " opened \n");
         serverMessagesTextArea.append("Waiting connections... \n");
+        
         Thread T = new Thread(new Runnable() {
             @Override
             public void run() {
+  
                 Socket link = null;
-                while (true) {
+                while (serverStatus) {
 
                     try {
                         link = ss.accept();
-                        Thread Tr = new Thread(new Link(new Tuplu("", link)));
+                        Link lk = new Link(new Tuplu("", link));
+                        Thread Tr = new Thread(lk);
+                        conexiuni.add(lk);
+                        threads.add(Tr);
                         Tr.start();
 
                     } catch (IOException ioEx) {
                         serverMessagesTextArea.append(ioEx.toString());
                     }
-
                 }
+                
+                Thread.currentThread().interrupt();
+
             }
         });
         this.getLinksThreadId = T.getId();
