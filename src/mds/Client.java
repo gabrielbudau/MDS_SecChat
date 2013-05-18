@@ -218,13 +218,15 @@ class Client extends javax.swing.JFrame {
                         String temp = res.substring(0, res.indexOf(":")); //de la cine am primit mesajul
                         int index = searchByTitle(temp);
                         Date ddd = new Date();
-                        Vigenere vvv = new Vigenere(Date.makeSHA1Hash(ddd.dateString));
+                        String mesKey = Date.makeSHA1Hash(ddd.dateString);
                         
                         if (index != -1) {
                             //ClientForm frm = (ClientForm) tabs.get(index);
                             ClientPanel cpl = (ClientPanel) tabs.get(index).getY();
                             //--------Decriptare mesaj-----
-                            String dec = vvv.decrypt(res.substring(res.indexOf(":") + 2));
+                            String elem = res.substring(res.indexOf(":") + 2);
+                            System.out.println("Recieved: " + elem);
+                            String dec = Vigenere.decrypt(elem, mesKey);
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
@@ -245,7 +247,9 @@ class Client extends javax.swing.JFrame {
                             newTab(temp);
                             ClientPanel cpl = tabs.get(tabs.size() - 1).getY();
                             //--------Decriptare mesaj-----
-                            String dec = vvv.decrypt(res.substring(res.indexOf(":") + 2));
+                            String elem = res.substring(res.indexOf(":") + 2);
+                            System.out.println("Recieved: " + elem);
+                            String dec = Vigenere.decrypt(elem, mesKey);
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
@@ -387,7 +391,7 @@ class Client extends javax.swing.JFrame {
                 String mes = this.sendMessageTextField.getText();
 
                 Date ddd = new Date();
-                Vigenere vvv = new Vigenere(Date.makeSHA1Hash(ddd.dateString));
+                String mesKey = Date.makeSHA1Hash(ddd.dateString);
                 
                 if (!mes.equals("")) {
                     this.sendMessageTextField.setText("");
@@ -409,8 +413,8 @@ class Client extends javax.swing.JFrame {
                     /*
                      mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));*/
                     
-                    mes = vvv.encrypt(mes);
-                    
+                    mes = Vigenere.encrypt(mes, mesKey);
+                    System.out.println("Sent message: " + mes);
                     String send = username + "***" + chatWith + "%%%" + mes;
                     out.println(send);
                 }
