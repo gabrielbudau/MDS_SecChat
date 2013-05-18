@@ -215,16 +215,16 @@ class Client extends javax.swing.JFrame {
                     in = new Scanner(link.getInputStream());
                     while (in.hasNextLine()) {
                         res = in.nextLine();//mesaj primit de la server 
-
                         String temp = res.substring(0, res.indexOf(":")); //de la cine am primit mesajul
-
                         int index = searchByTitle(temp);
-
+                        Date ddd = new Date();
+                        Vigenere vvv = new Vigenere(Date.makeSHA1Hash(ddd.dateString));
+                        
                         if (index != -1) {
                             //ClientForm frm = (ClientForm) tabs.get(index);
                             ClientPanel cpl = (ClientPanel) tabs.get(index).getY();
                             //--------Decriptare mesaj-----
-                            //String dec = new String(AES.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password.getBytes()));
+                            String dec = vvv.decrypt(res.substring(res.indexOf(":") + 2));
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
@@ -238,14 +238,14 @@ class Client extends javax.swing.JFrame {
                             doc.insertString(doc.getLength(), "  " + res.substring(0, res.indexOf(":")), style);
                             StyleConstants.setForeground(style, Color.DARK_GRAY);
                             StyleConstants.setBold(style, false);
-                            doc.insertString(doc.getLength(), res.substring(res.indexOf(":")) + "\n", style);
+                            doc.insertString(doc.getLength(), "::" + dec + "\n", style);
                             cpl.messagesTextPane.select(doc.getLength(), doc.getLength());
 
                         } else {
                             newTab(temp);
                             ClientPanel cpl = tabs.get(tabs.size() - 1).getY();
                             //--------Decriptare mesaj-----
-                            //String dec = new String(AES.decrypt(res.substring(res.indexOf(":") + 2).getBytes(), cpl.password.getBytes()));
+                            String dec = vvv.decrypt(res.substring(res.indexOf(":") + 2));
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
                             // Create a style object and then set the style attributes
@@ -258,11 +258,9 @@ class Client extends javax.swing.JFrame {
                             doc.insertString(doc.getLength(), "  " + res.substring(0, res.indexOf(":")), style);
                             StyleConstants.setForeground(style, Color.DARK_GRAY);
                             StyleConstants.setBold(style, false);
-                            doc.insertString(doc.getLength(), res.substring(res.indexOf(":")) + "\n", style);
+                            doc.insertString(doc.getLength(), "::" + dec + "\n", style);
                             cpl.messagesTextPane.select(doc.getLength(), doc.getLength());
                             //TODO: Sa-i apara fereastra
-
-
                         }
                     }
                 } catch (IOException ex) {
@@ -388,7 +386,9 @@ class Client extends javax.swing.JFrame {
             try {
                 String mes = this.sendMessageTextField.getText();
 
-
+                Date ddd = new Date();
+                Vigenere vvv = new Vigenere(Date.makeSHA1Hash(ddd.dateString));
+                
                 if (!mes.equals("")) {
                     this.sendMessageTextField.setText("");
 
@@ -408,6 +408,9 @@ class Client extends javax.swing.JFrame {
                     messagesTextPane.select(doc.getLength(), doc.getLength());
                     /*
                      mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));*/
+                    
+                    mes = vvv.encrypt(mes);
+                    
                     String send = username + "***" + chatWith + "%%%" + mes;
                     out.println(send);
                 }
