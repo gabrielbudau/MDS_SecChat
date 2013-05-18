@@ -225,7 +225,6 @@ class Client extends javax.swing.JFrame {
                             ClientPanel cpl = (ClientPanel) tabs.get(index).getY();
                             //--------Decriptare mesaj-----
                             String elem = res.substring(res.indexOf(":") + 2);
-                            System.out.println("Recieved: " + elem);
                             String dec = Vigenere.decrypt(elem, mesKey);
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
@@ -248,7 +247,6 @@ class Client extends javax.swing.JFrame {
                             ClientPanel cpl = tabs.get(tabs.size() - 1).getY();
                             //--------Decriptare mesaj-----
                             String elem = res.substring(res.indexOf(":") + 2);
-                            System.out.println("Recieved: " + elem);
                             String dec = Vigenere.decrypt(elem, mesKey);
                             //-------------------------
                             StyledDocument doc = (StyledDocument) cpl.messagesTextPane.getDocument();
@@ -414,7 +412,6 @@ class Client extends javax.swing.JFrame {
                      mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));*/
                     
                     mes = Vigenere.encrypt(mes, mesKey);
-                    System.out.println("Sent message: " + mes);
                     String send = username + "***" + chatWith + "%%%" + mes;
                     out.println(send);
                 }

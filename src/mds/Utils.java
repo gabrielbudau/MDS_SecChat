@@ -10,11 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JLabel;
 
 /**
@@ -23,16 +18,14 @@ import javax.swing.JLabel;
  */
 public class Utils {
 
-    private static String IV = "AAAAAAAAAAAAAAAA";
-
     /*
      * Seteaza status-ul user-ului "_username" din BD cu "_status" 
      * optiuni posibile _status = offline | online
      */
     public static boolean changePass(String user, String pass, String email) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
             PreparedStatement pst = null;
             String update = "update `users` set `user_pass` = '" + pass + "' where `user_name` = '" + user + "' and `email` = '" + email + "';";
             pst = con.prepareStatement(update);
@@ -42,23 +35,22 @@ public class Utils {
             } else {
                 return true;
             }
-        } catch (ClassNotFoundException | SQLException ex) {
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
             return false;
-        }
+        } 
     }
 
     public static void setStatus(String _username, String _status) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
             PreparedStatement pst = null;
             String update = "update `users` set `status` = '" + _status + "' where `user_name` = '" + _username + "';";
             pst = con.prepareStatement(update);
             pst.executeUpdate();
 
-        } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+        } 
     }
 
     /*
@@ -67,10 +59,8 @@ public class Utils {
      */
     public static void getList(javax.swing.JList List) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con;
-
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
             PreparedStatement pst = null;
             String query = "SELECT user_name, status FROM users ORDER By 1 ;";
             pst = con.prepareStatement(query);
@@ -107,8 +97,8 @@ public class Utils {
             rs.close();
             con.close();
             pst.close();
-        } catch (ClassNotFoundException | SQLException e) {
-        }
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+        } 
     }
     /*
      * Intoarce true daca exista username-ul in BD
@@ -117,8 +107,8 @@ public class Utils {
 
     public static boolean checkUser(String user, String pass) {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
             PreparedStatement pst = null;
             String query = "SELECT user_name FROM users WHERE user_name = '" + user + "' and user_pass = '" + pass + "' ;";
             pst = con.prepareStatement(query);
@@ -129,8 +119,8 @@ public class Utils {
             } else {
                 return false;
             }
-        } catch (ClassNotFoundException | SQLException e) {
-        }
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+        } 
         return true;
     }
     /*
@@ -140,7 +130,8 @@ public class Utils {
     public static boolean addUser(String user, String pass, String first_name, String last_name, String email) {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/database", "root", "root");
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
+            //Connection con = DriverManager.getConnection(connectionString);
             PreparedStatement pst = null;
             //INSERT INTO `database`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) VALUES ('andrei', 'root', 'offline', 'Andrei', 'Butnaru', 'andreibutnaru@gmail.com');
             String insert = "insert into `uleimasl_users`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) values ("
@@ -175,41 +166,5 @@ public class Utils {
         final Map attributes = (new Font("Consolas", 1, 12)).getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         return attributes;
-    }
-
-    public static byte[] encrypt(String plainText, String encryptionKey) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
-        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES");
-        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(IV.getBytes("UTF-8")));
-        return cipher.doFinal(plainText.getBytes("UTF-8"));
-    }
-
-    public static String decrypt(byte[] cipherText, String encryptionKey) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
-        SecretKeySpec key = new SecretKeySpec(encryptionKey.getBytes("UTF-8"), "AES");
-        cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(IV.getBytes("UTF-8")));
-        return new String(cipher.doFinal(cipherText), "UTF-8");
-    }
-
-    public static String convertHexToString(String hex) {
-
-        StringBuilder sb = new StringBuilder();
-        StringBuilder temp = new StringBuilder();
-
-        //49204c6f7665204a617661 split into two characters 49, 20, 4c...
-        for (int i = 0; i < hex.length() - 1; i += 2) {
-
-            //grab the hex in pairs
-            String output = hex.substring(i, (i + 2));
-            //convert hex to decimal
-            int decimal = Integer.parseInt(output, 16);
-            //convert the decimal to character
-            sb.append((char) decimal);
-
-            temp.append(decimal);
-        }
-        System.out.println("Decimal : " + temp.toString());
-
-        return sb.toString();
     }
 }
