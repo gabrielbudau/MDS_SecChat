@@ -28,7 +28,6 @@ public class Vigenere {
         while (text.length() > key2.length()) {
             key2 += key;
         }
-        System.out.println(key2);
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             int index;
@@ -45,7 +44,6 @@ public class Vigenere {
         while (text.length() > key2.length()) {
             key2 += key;
         }
-        System.out.println(key2);
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             int index;
@@ -61,7 +59,7 @@ public class Vigenere {
         try {
             Date ddd = new Date();
             String key = Date.makeSHA1Hash(ddd.dateString);
-            String mes = "gabriel budau \"a facut\" tot proiectul";
+            String mes = "gabriel budau a facut tot proiectul";
             String enc = Vigenere.encrypt(mes, key);
             String dec = Vigenere.decrypt(enc, key);
             System.out.println("Mesaj: " + mes);

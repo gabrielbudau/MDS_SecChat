@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mds;
 
 import java.awt.Color;
@@ -140,6 +136,10 @@ public class ForgotMyPassword extends javax.swing.JFrame {
                 if (!Utils.changePass(user, pass, email)) {
                     infoLabel.setText("<html>Something went wrong <br> Check username or/and email</html>");
                     infoLabel.setForeground(Color.RED);
+                }else{
+                    this.setVisible(false);
+                    this.dispose();
+                    Thread.currentThread().interrupt();
                 }
             } else {
                 infoLabel.setText("Passwords must match");
