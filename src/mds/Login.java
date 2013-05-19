@@ -28,8 +28,6 @@ public class Login extends javax.swing.JFrame {
         forgotMyPasswordLabel.setFont(new Font("Consolas", 10, 12));
         usernameLabel1.setFont(new Font("Consolas", 10, 12));
         passwordLabel.setFont(new Font("Consolas", 10, 12));
-        //ImageIcon icon = new ImageIcon("chat.png");
-        //this.setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
@@ -179,7 +177,7 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
 
-    private void loginCheck(final String user, final String pass) {
+    private boolean loginCheck(final String user, final String pass) {
         if (Utils.checkUser(user, pass)) {
             this.usernameLabel.setVisible(true);
             java.awt.EventQueue.invokeLater(new Runnable() {
@@ -190,17 +188,21 @@ public class Login extends javax.swing.JFrame {
             });
             this.setVisible(false);
             username.setText("");
+            return true;
         } else {
             this.usernameLabel.setText("<html>Username and/or password<br>are invalid</html>");
             this.usernameLabel.setForeground(Color.red);
             this.usernameLabel.setVisible(true);
+            return false;
         }
     }
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         final String user = username.getText();
         String pass = new String(password.getPassword());
         if (!user.equals("")) {
-            loginCheck(user, pass);
+            if(loginCheck(user, pass)){
+                //ServerUtils.addLogin(user);
+            }
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
@@ -209,8 +211,9 @@ public class Login extends javax.swing.JFrame {
             String user = username.getText();
             String pass = new String(password.getPassword());
             if (!user.equals("")) {
-                loginCheck(user, pass);
-
+                 if(loginCheck(user, pass)){
+                   // ServerUtils.addLogin(user);
+                 }
             }
         }
     }//GEN-LAST:event_usernameKeyPressed

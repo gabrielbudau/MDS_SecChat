@@ -408,8 +408,6 @@ class Client extends javax.swing.JFrame {
                     StyleConstants.setBold(style, false);
                     doc.insertString(doc.getLength(), "::" + mes + "\n", style);
                     messagesTextPane.select(doc.getLength(), doc.getLength());
-                    /*
-                     mes = new String(AES.encrypt(mes.getBytes("US-ASCII"), password.getBytes("US-ASCII")));*/
                     
                     mes = Vigenere.encrypt(mes, mesKey);
                     String send = username + "***" + chatWith + "%%%" + mes;

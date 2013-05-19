@@ -1,8 +1,8 @@
-package SERVER;
-
+package mds;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -43,6 +43,7 @@ public class ServerFrame extends javax.swing.JFrame {
         clearBtn = new javax.swing.JButton();
         startBtn = new javax.swing.JButton();
         stopBtn = new javax.swing.JButton();
+        command = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,6 +76,12 @@ public class ServerFrame extends javax.swing.JFrame {
             }
         });
 
+        command.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                commandKeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,7 +97,8 @@ public class ServerFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(stopBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
-                        .addComponent(serverStatusLabel)))
+                        .addComponent(serverStatusLabel))
+                    .addComponent(command))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -104,8 +112,10 @@ public class ServerFrame extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addComponent(stopBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(command, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -147,6 +157,22 @@ public class ServerFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_startBtnActionPerformed
 
+    private void commandKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_commandKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String com = this.command.getText();
+            if(!com.equals("")){
+                String[] commandSplit = com.split(" ");
+                String printMessage = null;
+                if(commandSplit[0].equals("info") && ((printMessage = ServerUtils.userInfo(commandSplit[1])) != null)){
+                    serverMessagesTextArea.append("\n");
+                    serverMessagesTextArea.append(printMessage);
+                }else{
+                    serverMessagesTextArea.append("\nUser does not exist! \n");
+                }
+            }
+        }
+    }//GEN-LAST:event_commandKeyPressed
+
     private Tuplu findLink(String _username) {
         for (Tuplu elem : Links) {
             if (elem.x.equals(_username)) {
@@ -169,6 +195,11 @@ public class ServerFrame extends javax.swing.JFrame {
         serverMessagesTextArea.setFont(new Font("Consolas", 10, 12));
         serverMessagesTextArea.setForeground(Color.WHITE);
         serverMessagesTextArea.setBackground(Color.BLACK);
+        
+        command.setFont(new Font("Consolas", 10, 12));
+        command.setForeground(Color.WHITE);
+        command.setBackground(Color.BLACK);
+        
         serverMessagesTextArea.append("Opening PORT=" + PORT + " ...\n");
         try {
             ss = new ServerSocket(PORT);
@@ -231,6 +262,7 @@ public class ServerFrame extends javax.swing.JFrame {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton clearBtn;
+    private javax.swing.JTextField command;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea serverMessagesTextArea;
     private javax.swing.JLabel serverStatusLabel;

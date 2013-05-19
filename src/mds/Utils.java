@@ -8,8 +8,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 
 /**
@@ -37,7 +41,7 @@ public class Utils {
             }
         } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
             return false;
-        } 
+        }
     }
 
     public static void setStatus(String _username, String _status) {
@@ -50,7 +54,7 @@ public class Utils {
             pst.executeUpdate();
 
         } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
-        } 
+        }
     }
 
     /*
@@ -98,12 +102,31 @@ public class Utils {
             con.close();
             pst.close();
         } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
-        } 
+        }
     }
     /*
      * Intoarce true daca exista username-ul in BD
      * altfel intoarce false daca nu exista
      */
+
+    public static boolean checkuserByusername(String user) {
+        try {
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
+            PreparedStatement pst = null;
+            String query = "SELECT user_name FROM users WHERE user_name = '" + user + "' ;";
+            pst = con.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            rs.last();
+            if (rs.getRow() == 1 /*&& rs.getString("status").equals("offline")*/) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+        }
+        return true;
+    }
 
     public static boolean checkUser(String user, String pass) {
         try {
@@ -120,34 +143,68 @@ public class Utils {
                 return false;
             }
         } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
-        } 
+        }
         return true;
     }
     /*
      * Adauga un nou user in baza de date
      */
-
-    public static boolean addUser(String user, String pass, String first_name, String last_name, String email) {
+    public static boolean addStat(String user) {
         try {
+            Calendar c = null;
+            java.util.Date date = null;
+            c = Calendar.getInstance();
+            date = c.getTime();
+            String dateString = new SimpleDateFormat("dd-MM-yyyy").format(date);
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
-            //Connection con = DriverManager.getConnection(connectionString);
             PreparedStatement pst = null;
-            //INSERT INTO `database`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) VALUES ('andrei', 'root', 'offline', 'Andrei', 'Butnaru', 'andreibutnaru@gmail.com');
-            String insert = "insert into `uleimasl_users`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) values ("
-                    + "'" + user + "', "
-                    + "'" + pass + "', "
-                    + "'offline', "
-                    + "'" + first_name + "', "
-                    + "'" + last_name + "', "
-                    + "'" + email + "');";
-            pst = con.prepareStatement(insert);
-            pst.executeUpdate();
-            return true;
+            String select = "select user_id from users where user_name = '" + user + "';";
+            pst = con.prepareStatement(select);
+            ResultSet rs = pst.executeQuery();
+            rs.next();
+            int user_id = rs.getInt("user_id");
+            String insert = ""
+                    + "insert into `uleimasl_users`.`stat` "
+                    + "VALUES (" + user_id + ","
+                    + " STR_TO_DATE('" + dateString + "', '%d-%m-%Y'), "
+                    + "null, null, null, null);";
+            PreparedStatement pst3 = con.prepareStatement(insert);
+            pst3.executeUpdate();
+            
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+        return true;
+    }
+
+    public static boolean addUser(String user, String pass, String first_name, String last_name, String email) {
+
+
+
+        try {
+            if (!Utils.checkuserByusername(user)) {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+                Connection con = DriverManager.getConnection("jdbc:mysql://89.42.216.160/uleimasl_users", "uleimasl_mdsSecC", "1ph{+HHvI]3W");
+                PreparedStatement pst = null;
+                //INSERT INTO `database`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) VALUES ('andrei', 'root', 'offline', 'Andrei', 'Butnaru', 'andreibutnaru@gmail.com');
+                String insert = "insert into `uleimasl_users`.`users` (`user_name`, `user_pass`, `status`, `first_name`, `last_name`, `email`) values ("
+                        + "'" + user + "', "
+                        + "'" + pass + "', "
+                        + "'offline', "
+                        + "'" + first_name + "', "
+                        + "'" + last_name + "', "
+                        + "'" + email + "');";
+                pst = con.prepareStatement(insert);
+                pst.executeUpdate();
+                return true;
+            } else {
+                return false;
+            }
         } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();
             return false;
-        } 
+        }
     }
 
     /*
