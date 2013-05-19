@@ -1,4 +1,4 @@
-package mds;
+
 
 import java.awt.Color;
 import java.awt.Font;
@@ -63,6 +63,7 @@ public class ServerFrame extends javax.swing.JFrame {
         });
 
         startBtn.setText("start");
+        startBtn.setEnabled(false);
         startBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startBtnActionPerformed(evt);
@@ -70,12 +71,14 @@ public class ServerFrame extends javax.swing.JFrame {
         });
 
         stopBtn.setText("stop");
+        stopBtn.setEnabled(false);
         stopBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stopBtnActionPerformed(evt);
             }
         });
 
+        command.setEnabled(false);
         command.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 commandKeyPressed(evt);
