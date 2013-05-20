@@ -6,11 +6,13 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Gabriel Budau
+ * @author Gabriel Budau, Alina Midoschi Livia, Malaiasi Laura Georgiana, Turbatu Elena, Horia Constantin
  */
 public class Vigenere {
 
-    private static final String charset = "`1234567890-=qwertyuiop[]\';lkjhgfdsazxcvbn\"m,./~!@# $%^&*()_+|}{POIUYTREWQASDFGHJKL:?><MNBVCXZ";
+    private static final String charset = "`1234567890-=qwertyuiop[]\';lkjhgfdsazxcvbn\""
+            + "m,./~!@# $%^&*()_+|}{POIUYTREWQASD"
+            + "FGHJKL:?><MNBVCXZ";
 
     private static int contains(char c) {
         for (int i = 0; i < charset.length(); i++) {
@@ -59,7 +61,7 @@ public class Vigenere {
         try {
             Date ddd = new Date();
             String key = Date.makeSHA1Hash(ddd.dateString);
-            String mes = "gabriel budau a facut tot proiectul";
+            String mes = "mesaj de test";
             String enc = Vigenere.encrypt(mes, key);
             String dec = Vigenere.decrypt(enc, key);
             System.out.println("Mesaj: " + mes);

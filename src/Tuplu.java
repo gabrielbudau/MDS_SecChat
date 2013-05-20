@@ -2,7 +2,7 @@
 
 /**
  *
- * @author Gabriel Budau
+ * @author Gabriel Budau, Alina Midoschi Livia, Malaiasi Laura Georgiana, Turbatu Elena, Horia Constantin
  */
 class Tuplu <T, U>{
     T x;

@@ -9,7 +9,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author Gabriel Budau
+ * @author Gabriel Budau, Alina Midoschi Livia, Malaiasi Laura Georgiana, Turbatu Elena, Horia Constantin
  */
 public class SignUp extends javax.swing.JFrame {
 

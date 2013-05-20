@@ -10,7 +10,7 @@ import javax.swing.text.*;
 
 /**
  *
- * @author Gabriel Budau
+ * @author Gabriel Budau, Alina Midoschi Livia, Malaiasi Laura Georgiana, Turbatu Elena, Horia Constantin
  */
 class Client extends javax.swing.JFrame {
     // Comm

@@ -12,7 +12,7 @@ import javax.swing.UIManager;
 
 /**
  *
- * @author Gabriel Budau
+ * @author Gabriel Budau, Alina Midoschi Livia, Malaiasi Laura Georgiana, Turbatu Elena, Horia Constantin
  */
 public class ServerFrame extends javax.swing.JFrame {
 
